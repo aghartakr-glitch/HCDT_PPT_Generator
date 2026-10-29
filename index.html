@@ -134,7 +134,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
 /* present */
 .present{position:fixed;inset:0;background:#000;z-index:200;display:flex;align-items:center;justify-content:center}
 .present .pv{position:relative}
-.present .pinfo{position:fixed;right:16px;bottom:12px;color:#888;font-size:var(--fs-small)}
+.present .phint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(0,0,0,.72);color:#fff;font-size:var(--fs-small);padding:6px 14px;border-radius:9999em;opacity:0;pointer-events:none;transition:opacity .25s}.present .phint.on{opacity:1}.present .pinfo{position:fixed;right:16px;bottom:12px;color:#888;font-size:var(--fs-small)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;z-index:300;font-size:var(--fs-small);max-width:90vw}
 #offscreen{position:fixed;left:-30000px;top:0;width:1920px;height:1080px;overflow:hidden}
 @media (max-width:1100px){.main{grid-template-columns:180px 1fr 260px}}
@@ -193,7 +193,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     <div class="lgrid" id="picker-grid"></div>
   </div>
 </div>
-<div class="present" id="present" hidden><div class="pv" id="pv"></div><div class="pinfo" id="pinfo"></div></div>
+<div class="present" id="present" hidden><div class="pv" id="pv"></div><div class="pinfo" id="pinfo"></div><div class="phint" id="phint">← → Navigate · Esc Exit</div></div>
 <div id="offscreen" aria-hidden="true"></div>
 <input type="file" id="file-img" accept="image/*" hidden>
 <input type="file" id="file-json" accept=".json,application/json" hidden>
@@ -926,9 +926,11 @@ picker.addEventListener('pointerdown',ev=>{if(ev.target===picker)picker.hidden=t
 
 /* ===== present ===== */
 const pres=document.getElementById('present'),pv=document.getElementById('pv');let pIdx=0;
-function openPresent(){pIdx=cur;pres.hidden=false;try{pres.requestFullscreen&&pres.requestFullscreen().catch(()=>{})}catch(_){}showP()}
+function openPresent(){pIdx=cur;pres.hidden=false;phShow();try{pres.requestFullscreen&&pres.requestFullscreen().catch(()=>{})}catch(_){}showP()}
 function showP(){pv.innerHTML='';const n=renderSlide(deck.slides[pIdx],'present',pIdx);const k=Math.min(innerWidth/W,innerHeight/H);pv.style.width=W*k+'px';pv.style.height=H*k+'px';n.style.transform=`scale(${k})`;pv.appendChild(n);document.getElementById('pinfo').textContent=`${pIdx+1} / ${deck.slides.length}`}
+let phT=0;function phShow(){const h=document.getElementById('phint');if(!h)return;h.classList.add('on');clearTimeout(phT);phT=setTimeout(()=>h.classList.remove('on'),2200)}
 function closePresent(){pres.hidden=true;try{document.fullscreenElement&&document.exitFullscreen()}catch(_){}}
+['mousemove','touchstart'].forEach(ev=>pres.addEventListener(ev,()=>{if(!pres.hidden)phShow()},{passive:true}));
 pres.onclick=()=>{if(pIdx<deck.slides.length-1){pIdx++;showP()}else closePresent()};
 addEventListener('resize',()=>{if(!pres.hidden)showP()});
 
