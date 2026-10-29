@@ -157,8 +157,8 @@ input[type=range]{flex:1;accent-color:var(--accent)}
   <div class="spacer"></div>
   <div class="hx-act">
     <button class="btn" id="btn-present" data-i18n="present" title="Full-screen presentation · ← → to move · Esc to exit">Present</button>
-    <button class="btn" id="btn-undo" data-i18n-title="undo" title="Undo" aria-label="Undo">↶</button>
-    <button class="btn" id="btn-redo" data-i18n-title="redo" title="Redo" aria-label="Redo">↷</button>
+    <button class="btn" id="btn-undo" data-i18n-title="undo" title="Undo (Ctrl+Z)" aria-label="Undo">↶</button>
+    <button class="btn" id="btn-redo" data-i18n-title="redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo">↷</button>
     <span class="hx-sep"></span>
     <button class="btn" id="btn-grid" aria-pressed="true" data-i18n="grid">Grid</button>
     <span class="hx-sep"></span>
@@ -423,7 +423,7 @@ const CATS=['cover','contents','section','body','photo1','photo2','photo3','phot
 
 /* ===== i18n ===== */
 const I18N={
-en:{grid:'Grid',present:'Present',export:'Export',undo:'Undo',redo:'Redo',close:'Close',x_pptx:'Editable text, images and logos',x_pdf:'All slides, 1920×1080 image pages',x_png:'Current slide, 1920×1080',x_save:'Save project (.json)',x_save_d:'Reopen later with all images',x_open:'Open project…',x_open_d:'Load a saved .json file',
+en:{grid:'Grid',present:'Present',export:'Export',undo:'Undo (Ctrl+Z)',redo:'Redo (Ctrl+Shift+Z)',close:'Close',x_pptx:'Editable text, images and logos',x_pdf:'All slides, 1920×1080 image pages',x_png:'Current slide, 1920×1080',x_save:'Save project (.json)',x_save_d:'Reopen later with all images',x_open:'Open project…',x_open_d:'Load a saved .json file',
  addSlide:'+ Add slide',addTitle:'Add slide',changeTitle:'Change layout',
  cat_cover:'Cover',cat_contents:'Contents',cat_section:'Section',cat_body:'Body',cat_photo:'Photo',cat_quote:'Quote',cat_thanks:'Thank you',photos:'photos',photo1:'1 photo',
  deck:'Deck',theme:'Color theme',slide:'Slide',element:'Selected element',
@@ -447,7 +447,7 @@ en:{grid:'Grid',present:'Present',export:'Export',undo:'Undo',redo:'Redo',close:
  fontNote:'Slide type: Helvetica Neue (English) and Spoqa Han Sans Neo (Korean), per guideline p.9.',
  info:'{n} / {t} · {cat}',
 },
-ko:{grid:'그리드',present:'발표',export:'내보내기',undo:'실행 취소',redo:'다시 실행',close:'닫기',x_pptx:'텍스트·이미지·로고 편집 가능',x_pdf:'전체 슬라이드, 1920×1080 이미지 페이지',x_png:'현재 슬라이드, 1920×1080',x_save:'프로젝트 저장 (.json)',x_save_d:'이미지 포함, 나중에 다시 열기',x_open:'프로젝트 열기…',x_open_d:'저장한 .json 불러오기',
+ko:{grid:'그리드',present:'발표',export:'내보내기',undo:'실행 취소 (Ctrl+Z)',redo:'다시 실행 (Ctrl+Shift+Z)',close:'닫기',x_pptx:'텍스트·이미지·로고 편집 가능',x_pdf:'전체 슬라이드, 1920×1080 이미지 페이지',x_png:'현재 슬라이드, 1920×1080',x_save:'프로젝트 저장 (.json)',x_save_d:'이미지 포함, 나중에 다시 열기',x_open:'프로젝트 열기…',x_open_d:'저장한 .json 불러오기',
  addSlide:'+ 슬라이드 추가',addTitle:'슬라이드 추가',changeTitle:'레이아웃 변경',
  cat_cover:'표지',cat_contents:'목차',cat_section:'간지',cat_body:'본문',cat_photo:'사진',cat_quote:'인용구',cat_thanks:'땡큐',photos:'장',photo1:'1장',
  deck:'문서',theme:'색상 테마',slide:'슬라이드',element:'선택한 요소',
