@@ -80,13 +80,13 @@ select,input[type=text]{border:1px solid var(--line);border-radius:6px;padding:6
 select{flex:1}
 input[type=range]{flex:1;accent-color:var(--accent)}
 .themes{display:flex;flex-direction:column;gap:12px}
-.tgroup .gl{font-size:var(--fs-small);color:var(--muted);margin-bottom:6px;line-height:1.35}
+.tgroup{display:grid;grid-template-columns:52px 1fr;align-items:start;gap:6px;margin-bottom:10px}.tgroup .gl{font-size:var(--fs-small);color:var(--muted);font-weight:700;line-height:1.35}
 .tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .tgrid.two{grid-template-columns:repeat(2,1fr)}
-.tsw{border:1px solid var(--line);border-radius:4px;padding:0;height:34px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.tsw{border:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);border-radius:4px;padding:0;aspect-ratio:1.6;height:auto;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 .tsw svg{height:16px;width:auto;max-width:86%}
-.tsw i{width:9px;height:9px;border-radius:50%;margin-left:6px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
-.tsw.on,.btn[aria-pressed="true"][data-sth]{outline:2px solid var(--ink);outline-offset:2px}
+.tsw i{width:6px;height:6px;border-radius:50%;margin-left:4px}
+.tsw.on,.btn[aria-pressed="true"][data-sth]{outline:2px solid var(--ink);outline-offset:2px}.tgrid.two{grid-template-columns:repeat(2,1fr)}
 .tsw .lc{position:absolute;right:2px;top:1px;font-size:var(--fs-small);font-weight:700;background:#fff;color:var(--warn);border-radius:2px;padding:0 2px;line-height:1.3}
 .note{font-size:var(--fs-small);color:var(--muted);line-height:1.45}
 .note.warn{color:var(--warn)}
@@ -772,14 +772,10 @@ function gcImages(){const used=new Set();deck.slides.forEach(s=>s.els.forEach(e=
 const insp=document.getElementById('insp');
 const VROWS=[{k:'U',gs:['U']},{k:'W',gs:['W']},{k:'P',gs:['A','B']},{k:'X',gs:['C','F']}],VLAB={U:'UNIST',W:'White',P:'Purple',X:'Color'},varSel={};
 function themeRows(selId,attr){
-  const cur=THEMES.find(x=>x.id===selId);
-  return VROWS.map(r=>{
-    const g=(cur&&r.gs.includes(cur.g)?cur.g:null)||varSel[r.k]||r.gs[0]; varSel[r.k]=g;
-    const seg=r.gs.length>1?`<div class="seg vseg" role="group">${r.gs.map(v=>`<button data-tvar="${r.k}:${v}" aria-pressed="${v===g}">${v}</button>`).join('')}</div>`:'';
-    return `<div class="tgroup"><div class="gl">${VLAB[r.k]}${seg}</div><div class="tgrid${g==='U'?' two':''}">${THEMES.filter(x=>x.g===g).map(x=>themeSwatch(x,x.id===selId,attr)).join('')}</div></div>`}).join('');
+  return VROWS.map(r=>`<div class="tgroup"><div class="gl">${VLAB[r.k]}</div><div class="tgrid">${THEMES.filter(x=>r.gs.includes(x.g)).map(x=>themeSwatch(x,x.id===selId,attr)).join('')}</div></div>`).join('');
 }
 function themeSwatch(th,on,attr){attr=attr||'data-theme';const lc=contrast(th.fg,th.bg);const logo='';
-  return `<button class="tsw${on?' on':''}" ${attr}="${th.id}" style="background:${th.bg}" title="${CN[th.bg]} / ${CN[th.fg]} / ${CN[th.pt]} · ${lc.toFixed(1)}:1"><b style="color:${th.fg};font-size:15px">Aa</b><i style="background:${th.pt}"></i>${lc<4.5?'<span class="lc">!</span>':''}</button>`}
+  return `<button class="tsw${on?' on':''}" ${attr}="${th.id}" style="background:${th.bg}" title="${CN[th.bg]} / ${CN[th.fg]} / ${CN[th.pt]} · ${lc.toFixed(1)}:1"><b style="color:${th.fg};font-size:var(--fs-small);font-weight:700">Aa</b><i style="background:${th.pt}"></i></button>`}
 let inspTab='slide',_lastSel=null;
 function renderInsp(){
   const s=deck.slides[cur];const e=s.els.find(x=>x.id===sel);const dth=TH(deck.theme);
@@ -855,7 +851,6 @@ function bindInsp(e,s){
   const stt=q('#i-stheme');if(stt)stt.onchange=ev=>change(()=>{s.theme=ev.target.value||null});
   const pn=q('#i-pn');if(pn)pn.onchange=ev=>change(()=>{deck.pn.on=ev.target.checked});
   const ph=q('#i-pnhide');if(ph)ph.onchange=ev=>change(()=>{s.noPn=ev.target.checked});
-  qa('[data-tvar]').forEach(b=>b.onclick=()=>{const [r,g]=b.dataset.tvar.split(':');varSel[r]=g;renderInsp()});
   qa('[data-pnpos]').forEach(b=>b.onclick=()=>change(()=>{deck.pn.pos=b.dataset.pnpos}));
   const pz=q('#i-pnsize');if(pz){pz.onpointerdown=()=>snapshot();pz.onkeydown=()=>snapshot();
     pz.oninput=()=>{deck.pn.size=+pz.value;q('#i-pnval').textContent=pz.value;renderStage()};pz.onchange=()=>{renderSlides();autosave()}}
