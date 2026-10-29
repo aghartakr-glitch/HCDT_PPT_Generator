@@ -163,6 +163,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     <button class="btn" id="btn-grid" aria-pressed="true" data-i18n="grid">Grid</button>
     <span class="hx-sep"></span>
     <button class="btn" id="btn-save" title="Save project (.json)">Save</button>
+    <button class="btn" id="btn-open" title="Open project (.json)">Open</button>
     <span class="hx-sep"></span>
     <div class="menu">
       <button class="btn primary" id="btn-export" aria-haspopup="true" aria-expanded="false"><span data-i18n="export">Export</span> ▾</button>
@@ -1021,7 +1022,7 @@ document.getElementById('btn-grid').onclick=toggleGrid;
 document.getElementById('btn-save').onclick=()=>document.querySelector('#export-pop [data-x=json]').click();
 
 document.getElementById('btn-present').onclick=openPresent;
-document.getElementById('btn-undo').onclick=undo;document.getElementById('btn-redo').onclick=redo;
+document.getElementById('btn-open').onclick=()=>document.querySelector('#export-pop [data-x=open]').click();document.getElementById('btn-undo').onclick=undo;document.getElementById('btn-redo').onclick=redo;
 function renderAll(){renderSlides();renderStage();renderInsp()}
 addEventListener('resize',()=>{fitStage();thumbFits.forEach(f=>f())});
 deck=load();applyLang();renderAll();
