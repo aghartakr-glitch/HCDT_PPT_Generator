@@ -152,18 +152,25 @@ input[type=range]{flex:1;accent-color:var(--accent)}
 <header class="top">
   <div class="brand" id="brand"></div>
   <div class="spacer"></div>
-  <button class="btn" id="btn-undo" data-i18n-title="undo" title="Undo">↶</button>
-  <button class="btn" id="btn-redo" data-i18n-title="redo" title="Redo">↷</button>
-  <button class="btn" id="btn-grid" aria-pressed="true" data-i18n="grid">Grid</button>
-  <button class="btn" id="btn-present" data-i18n="present">Present</button>
-  <div class="menu">
-    <button class="btn primary" id="btn-export" aria-haspopup="true" aria-expanded="false"><span data-i18n="export">Export</span> ▾</button>
-    <div class="menu-pop" id="export-pop" hidden>
-      <button data-x="pptx"><b>PowerPoint (.pptx)</b><small data-i18n="x_pptx">Editable text, images and logos</small></button>
-      <button data-x="pdf"><b>PDF</b><small data-i18n="x_pdf">All slides, 1920×1080 image pages</small></button>
-      <button data-x="png"><b>PNG</b><small data-i18n="x_png">Current slide, 1920×1080</small></button>
-      <button data-x="json"><b data-i18n="x_save">Save project (.json)</b><small data-i18n="x_save_d">Reopen later with all images</small></button>
-      <button data-x="open"><b data-i18n="x_open">Open project…</b><small data-i18n="x_open_d">Load a saved .json file</small></button>
+  <div class="hx-act">
+    <button class="btn" id="btn-undo" data-i18n-title="undo" title="Undo" aria-label="Undo">↶</button>
+    <button class="btn" id="btn-redo" data-i18n-title="redo" title="Redo" aria-label="Redo">↷</button>
+    <span class="hx-sep"></span>
+    <button class="btn" id="btn-grid" aria-pressed="true" data-i18n="grid">Grid</button>
+    <button class="btn" id="btn-present" data-i18n="present">Present</button>
+    <span class="hx-sep"></span>
+    <button class="btn" id="btn-save" title="Save project (.json)">Save</button>
+    <button class="btn" id="btn-open" title="Open project (.json)">Open</button>
+    <span class="hx-sep"></span>
+    <div class="menu">
+      <button class="btn primary" id="btn-export" aria-haspopup="true" aria-expanded="false"><span data-i18n="export">Export</span> ▾</button>
+      <div class="menu-pop" id="export-pop" hidden>
+        <button data-x="pptx"><b>PowerPoint (.pptx)</b><small data-i18n="x_pptx">Editable text, images and logos</small></button>
+        <button data-x="pdf"><b>PDF</b><small data-i18n="x_pdf">All slides, 1920×1080 image pages</small></button>
+        <button data-x="png"><b>PNG</b><small data-i18n="x_png">Current slide, 1920×1080</small></button>
+        <button data-x="json" hidden><b data-i18n="x_save">Save project (.json)</b></button>
+        <button data-x="open" hidden><b data-i18n="x_open">Open project…</b></button>
+      </div>
     </div>
   </div>
 </header>
@@ -1004,6 +1011,8 @@ let toastT=null;function toast(m,ms=2200){const el=document.getElementById('toas
 function applyLang(){document.documentElement.lang=LANG;document.querySelectorAll('[data-i18n]').forEach(n=>n.textContent=t(n.dataset.i18n));document.querySelectorAll('[data-i18n-title]').forEach(n=>n.title=t(n.dataset.i18nTitle));
   const br=document.getElementById('brand');if(br)br.innerHTML=LANG==='ko'?'<b>HCDT PPT</b><span>16:9 · 8단 × 10행</span>':'<b>HCDT Slides</b><span>16:9 · 8 columns × 10 rows</span>';document.title=LANG==='ko'?'HCDT PPT 생성기':'HCDT Slides'}
 document.getElementById('btn-grid').onclick=toggleGrid;
+document.getElementById('btn-save').onclick=()=>document.querySelector('#export-pop [data-x=json]').click();
+document.getElementById('btn-open').onclick=()=>document.querySelector('#export-pop [data-x=open]').click();
 document.getElementById('btn-present').onclick=openPresent;
 document.getElementById('btn-undo').onclick=undo;document.getElementById('btn-redo').onclick=redo;
 function renderAll(){renderSlides();renderStage();renderInsp()}
