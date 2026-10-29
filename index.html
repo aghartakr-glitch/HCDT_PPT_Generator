@@ -62,6 +62,13 @@ aside.slides{border-right:1px solid var(--line);background:var(--paper);overflow
 .stage-bar{position:absolute;left:12px;bottom:10px;display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px}
 .stage-bar .btn{background:rgba(255,255,255,.9)}
 aside.insp{border-left:1px solid var(--line);background:var(--paper);overflow:auto}
+.itabs{display:grid;grid-template-columns:repeat(3,1fr);position:sticky;top:0;z-index:2;background:var(--paper);border-bottom:1px solid var(--line)}
+.itabs button{border:0;border-bottom:2px solid transparent;background:transparent;padding:11px 4px 9px;font-size:12.5px;color:var(--muted);border-radius:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.itabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink);font-weight:600}
+.scope{margin:0;padding:8px 16px;font-size:12px;color:var(--muted);background:var(--panel);border-bottom:1px solid var(--line)}
+.pnpick{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:4px;width:132px;aspect-ratio:16/9;padding:4px;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+.pnpick button{border:1px dashed var(--line);background:var(--paper);border-radius:3px;padding:0;min-height:0}
+.pnpick button[aria-pressed="true"]{background:var(--ink);border-style:solid;border-color:var(--ink)}
 .sec{padding:14px 16px;border-bottom:1px solid var(--line)}
 .sec h3{margin:0 0 10px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
@@ -410,7 +417,7 @@ en:{grid:'Grid',present:'Present',export:'Export',undo:'Undo',redo:'Redo',close:
  g_U:'UNIST Full Version — official lockup, UNIST Navy and white only',g_W:'HCDT on white — HCDT Purple + one auxiliary color',g_A:'A. Purple background + white text + auxiliary point',g_B:'B. Purple background + auxiliary text + auxiliary point',g_C:'C. Auxiliary background + purple text + auxiliary point',g_D:'D. Auxiliary background + auxiliary text + purple point',g_E:'E. Auxiliary background + auxiliary text + auxiliary point',
  ptFallback:'Point colour is too light for text on this background, so the text colour is used.',
  lowc:'Text-to-background contrast is {r}:1, below 4.5:1. Good for titles and large text; small text (body, notes, captions) is harder to read.',
- pagenum:'Page numbers',slideTheme:'Slide color',inherit:'Same as deck',layout:'Layout',change:'Change layout',
+ pagenum:'Page numbers',tabEl:'Element',tabSlide:'Slide',tabDeck:'Deck',scope_el:'Applies to the selected element only.',scope_slide:'Applies to this slide only.',scope_deck:'Applies to every slide.',secLayout:'Layout',secColor:'Slide color',secAdd:'Add element',secFont:'Fonts',pnShow:'Show page numbers',pnPos:'Position',pnSize:'Size (px)',pnHide:'Hide on this slide',pnOff:'Page numbers are off. Turn them on in the Deck tab.',pnLogo:'Hidden here: the logo sits in the same corner.',pnNote:'Size is measured on the 1920 px slide. Text follows the grid margin and the baseline model.',pn_tl:'Top left',pn_tc:'Top center',pn_tr:'Top right',pn_bl:'Bottom left',pn_bc:'Bottom center',pn_br:'Bottom right',slideTheme:'Slide color',inherit:'Same as deck',layout:'Layout',change:'Change layout',
  add:'Add',aText:'Text',aImg:'Image',aRect:'Color block',aRule:'Line',aSym:'Symbol',aLogo:'Logo',
  noSel:'Click an element on the slide to edit it. Double-click text to type. Drag to move along the grid; drag the corner dot to resize.',
  style:'Style',align:'Align',valign:'Vertical',color:'Color',cText:'Text color',cPoint:'Point color',fill:'Fill',
@@ -434,7 +441,7 @@ ko:{grid:'그리드',present:'발표',export:'내보내기',undo:'실행 취소'
  g_U:'UNIST 풀버전 — 공식 조합형, UNIST 네이비·흰색만 사용',g_W:'흰 배경 HCDT — HCDT 퍼플 + 보조색 1개',g_A:'A. 보라 배경 + 흰 글자 + 보조색 포인트',g_B:'B. 보라 배경 + 보조색 글자 + 보조색 포인트',g_C:'C. 보조색 배경 + 보라 글자 + 보조색 포인트',g_D:'D. 보조색 배경 + 보조색 글자 + 보라 포인트',g_E:'E. 보조색 배경 + 보조색 글자 + 보조색 포인트',
  ptFallback:'이 배경에서는 포인트색이 글자로 쓰기엔 너무 연해 글자색으로 표시됨.',
  lowc:'글자-배경 명도 대비 {r}:1, 기준 4.5:1 미만. 제목·큰 글자에는 적합, 작은 글자(본문·설명·캡션)는 읽기 어려움.',
- pagenum:'쪽 번호',slideTheme:'슬라이드 색상',inherit:'문서와 같음',layout:'레이아웃',change:'레이아웃 변경',
+ pagenum:'쪽 번호',tabEl:'요소',tabSlide:'슬라이드',tabDeck:'문서',scope_el:'선택한 요소에만 적용.',scope_slide:'이 슬라이드에만 적용.',scope_deck:'모든 슬라이드에 적용.',secLayout:'레이아웃',secColor:'슬라이드 색상',secAdd:'요소 추가',secFont:'글꼴',pnShow:'쪽 번호 표시',pnPos:'위치',pnSize:'크기(px)',pnHide:'이 슬라이드에서 숨김',pnOff:'쪽 번호가 꺼져 있음. 문서 탭에서 켜기.',pnLogo:'같은 모서리에 로고가 있어 숨김.',pnNote:'크기는 1920px 슬라이드 기준. 글자는 격자 여백과 기준선 모델에 맞춤.',pn_tl:'왼쪽 위',pn_tc:'가운데 위',pn_tr:'오른쪽 위',pn_bl:'왼쪽 아래',pn_bc:'가운데 아래',pn_br:'오른쪽 아래',slideTheme:'슬라이드 색상',inherit:'문서와 같음',layout:'레이아웃',change:'레이아웃 변경',
  add:'추가',aText:'텍스트',aImg:'이미지',aRect:'색면',aRule:'선',aSym:'심볼',aLogo:'로고',
  noSel:'슬라이드 요소를 클릭해 편집. 텍스트는 더블클릭해 입력. 드래그로 그리드 따라 이동, 모서리 점 드래그로 크기 조절.',
  style:'스타일',align:'정렬',valign:'세로',color:'색',cText:'글자색',cPoint:'포인트색',fill:'채움',
@@ -477,18 +484,24 @@ function instantiate(cat,idx){
   return {id:uid(),cat,li:idx,theme:null,els:src.map(e=>{const o=JSON.parse(JSON.stringify(e));o.id=uid();if(o.t==='text'){o.text=o.x!=null?o.x:defText(o.role);delete o.x;o.al=o.al||'l';o.va=o.va||'t';o.co=o.co||'fg'}if(o.t==='img'){o.src=null;o.px=50;o.py=50;o.z=1}return o})};
 }
 function sampleDeck(){
-  return {v:1,theme:'u-w',pageNum:false,images:{},slides:[instantiate('cover',0),instantiate('contents',0),instantiate('section',0),instantiate('body',0),instantiate('body',1),instantiate('photo1',0),instantiate('photo3',0),instantiate('quote',0),instantiate('thanks',0)]};
+  return {v:1,theme:'u-w',pn:{on:false,pos:'br',size:12},images:{},slides:[instantiate('cover',0),instantiate('contents',0),instantiate('section',0),instantiate('body',0),instantiate('body',1),instantiate('photo1',0),instantiate('photo3',0),instantiate('quote',0),instantiate('thanks',0)]};
 }
 /* history */
 let hist=[],fut=[];
-function snapshot(){hist.push(JSON.stringify({slides:deck.slides,theme:deck.theme,pageNum:deck.pageNum}));if(hist.length>60)hist.shift();fut=[]}
-function restore(s){const o=JSON.parse(s);deck.slides=o.slides;deck.theme=o.theme;deck.pageNum=o.pageNum;cur=Math.min(cur,deck.slides.length-1);sel=null;renderAll()}
-function undo(){if(!hist.length)return;fut.push(JSON.stringify({slides:deck.slides,theme:deck.theme,pageNum:deck.pageNum}));restore(hist.pop())}
-function redo(){if(!fut.length)return;hist.push(JSON.stringify({slides:deck.slides,theme:deck.theme,pageNum:deck.pageNum}));restore(fut.pop())}
+/* page number: deck.pn = {on, pos:'tl|tc|tr|bl|bc|br', size:px at 1920 wide}; slide.noPn hides it on one slide */
+function normDeck(d){if(!d.pn||typeof d.pn!=='object')d.pn={on:!!d.pageNum,pos:'br',size:12};delete d.pageNum;
+  if(!/^[tb][lcr]$/.test(d.pn.pos||''))d.pn.pos='br';d.pn.size=Math.max(8,Math.min(48,+d.pn.size||12));d.pn.on=!!d.pn.on;return d}
+function pnGeom(pn){const sz=pn.size,lh=Math.round(sz*1.4),v=pn.pos[0],hx_=pn.pos[1],w=CW,h=Math.max(RH,lh);
+  return{left:hx_==='l'?M:hx_==='r'?W-M-w:(W-w)/2,top:v==='t'?M:H-M-h,w,h,sz,lh,v,al:{l:'left',c:'center',r:'right'}[hx_]}}
+function pnShown(s){if(!deck.pn||!deck.pn.on||s.noPn)return false;return !s.els.some(e=>e.t==='logo'&&e.pos===deck.pn.pos)}
+function snapshot(){hist.push(JSON.stringify({slides:deck.slides,theme:deck.theme,pn:deck.pn}));if(hist.length>60)hist.shift();fut=[]}
+function restore(s){const o=JSON.parse(s);deck.slides=o.slides;deck.theme=o.theme;if(o.pn)deck.pn=o.pn;cur=Math.min(cur,deck.slides.length-1);sel=null;renderAll()}
+function undo(){if(!hist.length)return;fut.push(JSON.stringify({slides:deck.slides,theme:deck.theme,pn:deck.pn}));restore(hist.pop())}
+function redo(){if(!fut.length)return;hist.push(JSON.stringify({slides:deck.slides,theme:deck.theme,pn:deck.pn}));restore(fut.pop())}
 /* persistence (per-viewer convenience only) */
 let saveTimer=null,autosaveWarned=false;
 function autosave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem('hcdt-slides-v1',JSON.stringify(deck))}catch(e){if(!autosaveWarned){autosaveWarned=true;toast(t('autosaveFail'),5000)}}},500)}
-function load(){try{const s=localStorage.getItem('hcdt-slides-v1');if(s){const d=JSON.parse(s);if(d&&d.slides&&d.slides.length)return d}}catch(e){}return sampleDeck()}
+function load(){try{const s=localStorage.getItem('hcdt-slides-v1');if(s){const d=JSON.parse(s);if(d&&d.slides&&d.slides.length)return normDeck(d)}}catch(e){}return normDeck(sampleDeck())}
 
 /* ===== geometry ===== */
 function box(e){
@@ -645,7 +658,7 @@ function renderSlide(s,mode,idx){
     else if(e.t==='sym'){d.className='el sym';d.innerHTML=svgOf('symbol',th.fg,th.pt,e.al)}
     root.appendChild(d);
   });
-  if(deck.pageNum&&!hasLogo&&idx!=null){const d=document.createElement('div');d.className='el text pn';Object.assign(d.style,{left:(W-M-CW)+'px',top:(M+9*RS)+'px',width:CW+'px',height:RH+'px',fontSize:'12px',lineHeight:'17px',fontWeight:400,color:th.fg,textAlign:'right',justifyContent:'flex-end',pointerEvents:'none'});const tx=document.createElement('div');tx.className='tx';tx.textContent=String(idx+1);tx.style.position='relative';tx.style.top=baselineShift(STY.caption,'b')+'px';d.appendChild(tx);root.appendChild(d)}
+  if(idx!=null&&pnShown(s)){const g=pnGeom(deck.pn);const d=document.createElement('div');d.className='el text pn';Object.assign(d.style,{left:g.left+'px',top:g.top+'px',width:g.w+'px',height:g.h+'px',fontSize:g.sz+'px',lineHeight:g.lh+'px',fontWeight:400,color:th.fg,textAlign:g.al==='center'?'center':g.al,justifyContent:g.v==='b'?'flex-end':'flex-start',pointerEvents:'none'});const tx=document.createElement('div');tx.className='tx';tx.textContent=String(idx+1);tx.style.position='relative';tx.style.top=baselineShift({fs:g.sz,lh:g.lh,w:400},g.v)+'px';d.appendChild(tx);root.appendChild(d)}
   if(mode==='edit'&&showGrid)root.appendChild(gridOverlay());
   return root;
 }
@@ -746,29 +759,37 @@ function gcImages(){const used=new Set();deck.slides.forEach(s=>s.els.forEach(e=
 const insp=document.getElementById('insp');
 function themeSwatch(th,on){const lc=contrast(th.fg,th.bg);const logo=th.logo==='full'?svgOf('full',th.fg):svgOf('general',th.fg,th.pt);
   return `<button class="tsw${on?' on':''}" data-theme="${th.id}" style="background:${th.bg}" title="${CN[th.bg]} / ${CN[th.fg]} / ${CN[th.pt]} · ${lc.toFixed(1)}:1">${logo}${lc<4.5?'<span class="lc">!</span>':''}</button>`}
+let inspTab='slide',_lastSel=null;
 function renderInsp(){
   const s=deck.slides[cur];const e=s.els.find(x=>x.id===sel);const dth=TH(deck.theme);
-  let h='';
-  /* element */
-  h+=`<div class="sec"><h3>${t('element')}</h3>`;
-  if(!e)h+=`<p class="note">${t('noSel')}</p>`;
-  else h+=elementPanel(e,s);
-  h+='</div>';
-  /* slide */
-  const cats=LAYOUTS[s.cat];
-  h+=`<div class="sec"><h3>${t('slide')} ${cur+1}</h3>
-   <div class="row"><label class="l">${t('layout')}</label><span class="pos">${s.cat.startsWith('photo')?t('cat_photo')+' '+s.cat.slice(5):t('cat_'+s.cat)} ${String(s.li+1).padStart(2,'0')} / ${cats.length}</span><button class="btn sm" id="i-change">${t('change')}</button></div>
-   <div class="row"><label class="l" for="i-stheme">${t('slideTheme')}</label><select id="i-stheme"><option value="">${t('inherit')}</option>${THEMES.map(x=>`<option value="${x.id}" ${s.theme===x.id?'selected':''}>${x.g==='U'?'UNIST':x.g==='W'?'HCDT White':x.g} · ${CN[x.bg]} / ${CN[x.fg]} / ${CN[x.pt]}</option>`).join('')}</select></div>
-   <div class="row"><label class="l">${t('add')}</label><div class="chips">
-     <button class="btn sm" data-add="text">${t('aText')}</button><button class="btn sm" data-add="img">${t('aImg')}</button><button class="btn sm" data-add="rect">${t('aRect')}</button><button class="btn sm" data-add="rule">${t('aRule')}</button><button class="btn sm" data-add="sym">${t('aSym')}</button>${s.els.some(x=>x.t==='logo')?'':`<button class="btn sm" data-add="logo">${t('aLogo')}</button>`}</div></div></div>`;
-  /* deck */
-  const groups=['U','W','A','B','C'];
-  h+=`<div class="sec"><h3>${t('deck')} · ${t('theme')}</h3><div class="themes">`;
-  groups.forEach(g=>{const list=THEMES.filter(x=>x.g===g);h+=`<div class="tgroup"><div class="gl">${t('g_'+g)}</div><div class="tgrid${g==='U'?' two':''}">${list.map(x=>themeSwatch(x,x.id===deck.theme)).join('')}</div></div>`});
-  const lc=contrast(dth.fg,dth.bg);
-  h+=`</div><p class="note" style="margin-top:10px">${CN[dth.bg]} · ${CN[dth.fg]} · ${CN[dth.pt]}</p>${lc<4.5?`<p class="note warn">${t('lowc',{r:lc.toFixed(1)})}</p>`:''}
-   <div class="row" style="margin-top:8px"><label><input type="checkbox" id="i-pn" ${deck.pageNum?'checked':''}> ${t('pagenum')}</label></div>
-   <p class="note">${t('fontNote')}</p></div>`;
+  if(sel!==_lastSel){if(sel)inspTab='el';_lastSel=sel}
+  const TABS_=[['el',t('tabEl')],['slide',t('tabSlide')+' '+(cur+1)],['deck',t('tabDeck')]];
+  let h=`<div class="itabs" role="tablist">${TABS_.map(([k,l])=>`<button role="tab" data-itab="${k}" aria-selected="${inspTab===k}">${l}</button>`).join('')}</div>
+   <p class="scope">${t('scope_'+inspTab)}</p>`;
+  if(inspTab==='el'){
+    h+=`<div class="sec">`+(!e?`<p class="note">${t('noSel')}</p>`:elementPanel(e,s))+`</div>`;
+  }else if(inspTab==='slide'){
+    const cats=LAYOUTS[s.cat];
+    h+=`<div class="sec"><h3>${t('secLayout')}</h3>
+     <div class="row"><span class="pos">${s.cat.startsWith('photo')?t('cat_photo')+' '+s.cat.slice(5):t('cat_'+s.cat)} ${String(s.li+1).padStart(2,'0')} / ${cats.length}</span><button class="btn sm" id="i-change">${t('change')}</button></div></div>
+     <div class="sec"><h3>${t('secColor')}</h3>
+     <div class="row"><select id="i-stheme" aria-label="${t('slideTheme')}"><option value="">${t('inherit')}</option>${THEMES.map(x=>`<option value="${x.id}" ${s.theme===x.id?'selected':''}>${x.g==='U'?'UNIST':x.g==='W'?'HCDT White':x.g} · ${CN[x.bg]} / ${CN[x.fg]} / ${CN[x.pt]}</option>`).join('')}</select></div></div>
+     <div class="sec"><h3>${t('secAdd')}</h3><div class="chips">
+       <button class="btn sm" data-add="text">${t('aText')}</button><button class="btn sm" data-add="img">${t('aImg')}</button><button class="btn sm" data-add="rect">${t('aRect')}</button><button class="btn sm" data-add="rule">${t('aRule')}</button><button class="btn sm" data-add="sym">${t('aSym')}</button>${s.els.some(x=>x.t==='logo')?'':`<button class="btn sm" data-add="logo">${t('aLogo')}</button>`}</div></div>
+     <div class="sec"><h3>${t('pagenum')}</h3>${deck.pn.on?`<div class="row"><label><input type="checkbox" id="i-pnhide" ${s.noPn?'checked':''}> ${t('pnHide')}</label></div>${!s.noPn&&!pnShown(s)?`<p class="note">${t('pnLogo')}</p>`:''}`:`<p class="note">${t('pnOff')}</p>`}</div>`;
+  }else{
+    const groups=['U','W','A','B','C'];
+    h+=`<div class="sec"><h3>${t('theme')}</h3><div class="themes">`;
+    groups.forEach(g=>{const list=THEMES.filter(x=>x.g===g);h+=`<div class="tgroup"><div class="gl">${t('g_'+g)}</div><div class="tgrid${g==='U'?' two':''}">${list.map(x=>themeSwatch(x,x.id===deck.theme)).join('')}</div></div>`});
+    const lc=contrast(dth.fg,dth.bg);
+    h+=`</div><p class="note" style="margin-top:10px">${CN[dth.bg]} · ${CN[dth.fg]} · ${CN[dth.pt]}</p>${lc<4.5?`<p class="note warn">${t('lowc',{r:lc.toFixed(1)})}</p>`:''}</div>
+     <div class="sec"><h3>${t('pagenum')}</h3>
+      <div class="row"><label><input type="checkbox" id="i-pn" ${deck.pn.on?'checked':''}> ${t('pnShow')}</label></div>
+      ${deck.pn.on?`<div class="row"><label class="l">${t('pnPos')}</label><div class="pnpick" role="group" aria-label="${t('pnPos')}">${['tl','tc','tr','bl','bc','br'].map(k=>`<button data-pnpos="${k}" aria-pressed="${deck.pn.pos===k}" title="${t('pn_'+k)}"></button>`).join('')}</div></div>
+      <div class="row"><label class="l" for="i-pnsize">${t('pnSize')}</label><input type="range" id="i-pnsize" min="8" max="48" step="1" value="${deck.pn.size}"><span class="pos" id="i-pnval">${deck.pn.size}</span></div>
+      <p class="note">${t('pnNote')}</p>`:''}</div>
+     <div class="sec"><h3>${t('secFont')}</h3><p class="note">${t('fontNote')}</p></div>`;
+  }
   insp.innerHTML=h;bindInsp(e,s);
 }
 function elementPanel(e,s){
@@ -810,9 +831,14 @@ function change(fn,keepInsp){snapshot();fn();renderStage();renderSlides();if(!ke
 function bindInsp(e,s){
   const q=(sel)=>insp.querySelector(sel),qa=(sel)=>insp.querySelectorAll(sel);
   renderInspPos();
-  q('#i-change').onclick=()=>openPicker('change');
-  q('#i-stheme').onchange=ev=>change(()=>{s.theme=ev.target.value||null});
-  q('#i-pn').onchange=ev=>change(()=>{deck.pageNum=ev.target.checked});
+  qa('[data-itab]').forEach(b=>b.onclick=()=>{inspTab=b.dataset.itab;renderInsp()});
+  const ch=q('#i-change');if(ch)ch.onclick=()=>openPicker('change');
+  const stt=q('#i-stheme');if(stt)stt.onchange=ev=>change(()=>{s.theme=ev.target.value||null});
+  const pn=q('#i-pn');if(pn)pn.onchange=ev=>change(()=>{deck.pn.on=ev.target.checked});
+  const ph=q('#i-pnhide');if(ph)ph.onchange=ev=>change(()=>{s.noPn=ev.target.checked});
+  qa('[data-pnpos]').forEach(b=>b.onclick=()=>change(()=>{deck.pn.pos=b.dataset.pnpos}));
+  const pz=q('#i-pnsize');if(pz){pz.onpointerdown=()=>snapshot();pz.onkeydown=()=>snapshot();
+    pz.oninput=()=>{deck.pn.size=+pz.value;q('#i-pnval').textContent=pz.value;renderStage()};pz.onchange=()=>{renderSlides();autosave()}}
   qa('[data-theme]').forEach(b=>b.onclick=()=>change(()=>{deck.theme=b.dataset.theme}));
   qa('[data-add]').forEach(b=>b.onclick=()=>addElement(b.dataset.add));
   if(!e)return;
@@ -955,13 +981,13 @@ async function exportPPTX(){
       else if(e.t==='sym'){const L=LOGOS.symbol;const sc=Math.min(b.w/L.w,b.h/L.h);const w=L.w*sc,h=L.h*sc;const x=e.al==='r'?b.x+b.w-w:e.al==='c'?b.x+(b.w-w)/2:b.x;const y=b.y+(b.h-h)/2;
         const png=await svgToPng(svgOf('symbol',th.fg,th.pt),w*2,h*2);sl.addImage({data:png,x:x*k,y:y*k,w:w*k,h:h*k})}
     }
-    if(deck.pageNum&&!s.els.some(e=>e.t==='logo'))sl.addText(String(i+1),{x:(W-M-CW)*k,y:(M+9*RS)*k,w:CW*k,h:RH*k,margin:0,fontFace:'Helvetica Neue',fontSize:6,color:hx(th.fg),align:'right',valign:'bottom'});
+    if(pnShown(s)){const g=pnGeom(deck.pn);sl.addText(String(i+1),{x:g.left*k,y:g.top*k,w:g.w*k,h:g.h*k,margin:0,fontFace:'Helvetica Neue',fontSize:Math.round(g.sz*0.5*2)/2,color:hx(th.fg),align:g.al,valign:g.v==='b'?'bottom':'top'})}
   }
   const blob=await p.write({outputType:'blob'});await saveFile(fname('pptx'),blob);
 }
 async function exportJSON(){await saveFile(fname('json'),new Blob([JSON.stringify(deck)],{type:'application/json'}))}
 const fileJson=document.getElementById('file-json');
-fileJson.onchange=()=>{const f=fileJson.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.slides||!d.slides.length)throw new Error('no slides');snapshot();deck=Object.assign({images:{},pageNum:false,theme:'u-w'},d);cur=0;sel=null;renderAll();autosave();toast(t('opened'))}catch(err){toast(t('failed')+err.message,4000)}};r.readAsText(f)};
+fileJson.onchange=()=>{const f=fileJson.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.slides||!d.slides.length)throw new Error('no slides');snapshot();deck=normDeck(Object.assign({images:{},theme:'u-w'},d));cur=0;sel=null;renderAll();autosave();toast(t('opened'))}catch(err){toast(t('failed')+err.message,4000)}};r.readAsText(f)};
 const expBtn=document.getElementById('btn-export'),expPop=document.getElementById('export-pop');
 expBtn.onclick=ev=>{ev.stopPropagation();expPop.hidden=!expPop.hidden;expBtn.setAttribute('aria-expanded',!expPop.hidden)};
 document.addEventListener('click',()=>{expPop.hidden=true;expBtn.setAttribute('aria-expanded','false')});
