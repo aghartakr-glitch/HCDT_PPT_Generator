@@ -163,7 +163,6 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     <button class="btn" id="btn-grid" aria-pressed="true" data-i18n="grid">Grid</button>
     <span class="hx-sep"></span>
     <button class="btn" id="btn-save" title="Save project (.json)">Save</button>
-    <button class="btn" id="btn-open" title="Open project (.json)">Open</button>
     <span class="hx-sep"></span>
     <div class="menu">
       <button class="btn primary" id="btn-export" aria-haspopup="true" aria-expanded="false"><span data-i18n="export">Export</span> ▾</button>
@@ -1018,7 +1017,7 @@ function applyLang(){document.documentElement.lang=LANG;document.querySelectorAl
   const br=document.getElementById('brand');if(br)br.innerHTML=LANG==='ko'?'<b>HCDT PPT</b><span>16:9 · 8단 × 10행</span>':'<b>HCDT Slides</b><span>16:9 · 8 columns × 10 rows</span>';document.title=LANG==='ko'?'HCDT PPT 생성기':'HCDT Slides'}
 document.getElementById('btn-grid').onclick=toggleGrid;
 document.getElementById('btn-save').onclick=()=>document.querySelector('#export-pop [data-x=json]').click();
-document.getElementById('btn-open').onclick=()=>document.querySelector('#export-pop [data-x=open]').click();
+
 document.getElementById('btn-present').onclick=openPresent;
 document.getElementById('btn-undo').onclick=undo;document.getElementById('btn-redo').onclick=redo;
 function renderAll(){renderSlides();renderStage();renderInsp()}
@@ -1029,4 +1028,5 @@ window.HXApply=function(l){if(l!==LANG){LANG=l;applyLang();renderAll()}};
 </script>
 <script src="hcdt-ui.js?v=20261029f" data-tool="slides"></script>
 <script>window.HX_CMYK=['#stage','#slides']</script><script src="hcdt-cmyk.js?v=20261029f"></script>
+<style>html.hx-wide .hx-steps{display:none!important}</style>
 </body></html>
