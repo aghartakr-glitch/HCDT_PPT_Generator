@@ -760,8 +760,8 @@ function gcImages(){const used=new Set();deck.slides.forEach(s=>s.els.forEach(e=
 
 /* ===== inspector ===== */
 const insp=document.getElementById('insp');
-function themeSwatch(th,on,attr){attr=attr||'data-theme';const lc=contrast(th.fg,th.bg);const logo=th.logo==='full'?svgOf('full',th.fg):svgOf('general',th.fg,th.pt);
-  return `<button class="tsw${on?' on':''}" ${attr}="${th.id}" style="background:${th.bg}" title="${CN[th.bg]} / ${CN[th.fg]} / ${CN[th.pt]} · ${lc.toFixed(1)}:1">${attr==='data-sth'?`<b style="color:${th.fg};font-size:15px">Aa</b><i style="background:${th.pt}"></i>`:logo}${lc<4.5?'<span class="lc">!</span>':''}</button>`}
+function themeSwatch(th,on,attr){attr=attr||'data-theme';const lc=contrast(th.fg,th.bg);const logo='';
+  return `<button class="tsw${on?' on':''}" ${attr}="${th.id}" style="background:${th.bg}" title="${CN[th.bg]} / ${CN[th.fg]} / ${CN[th.pt]} · ${lc.toFixed(1)}:1"><b style="color:${th.fg};font-size:15px">Aa</b><i style="background:${th.pt}"></i>${lc<4.5?'<span class="lc">!</span>':''}</button>`}
 let inspTab='slide',_lastSel=null;
 function renderInsp(){
   const s=deck.slides[cur];const e=s.els.find(x=>x.id===sel);const dth=TH(deck.theme);
