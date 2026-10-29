@@ -389,6 +389,8 @@ addT('U','u-w',C.W,C.N,C.N,'full'); addT('U','u-n',C.N,C.W,C.W,'full');
 [C.V,C.Tc,C.F,C.A].forEach((a,i)=>addT('A','a'+i,C.P,C.W,a,'general'));
 [[C.Tc,C.V],[C.F,C.A],[C.V,C.A],[C.A,C.F]].forEach(([f,p],i)=>addT('B','b'+i,C.P,f,p,'general'));
 [[C.V,C.A],[C.Tc,C.V],[C.F,C.Tc],[C.A,C.F]].forEach(([b,p],i)=>addT('C','c'+i,b,C.P,p,'general'));
+/* F: from the faculty review (purple backgrounds are hard to read). Not yet in the guide. */
+[C.V,C.Tc,C.F,C.A].forEach((b,i)=>addT('F','f'+i,b,C.P,C.W,'general'));
 const TH=id=>THEMES.find(t=>t.id===id)||THEMES[0];
 function lum(h){const c=[1,3,5].map(i=>parseInt(h.substr(i,2),16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*c[0]+.7152*c[1]+.0722*c[2]}
 function contrast(a,b){const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
@@ -414,7 +416,7 @@ en:{grid:'Grid',present:'Present',export:'Export',undo:'Undo',redo:'Redo',close:
  addSlide:'+ Add slide',addTitle:'Add slide',changeTitle:'Change layout',
  cat_cover:'Cover',cat_contents:'Contents',cat_section:'Section',cat_body:'Body',cat_photo:'Photo',cat_quote:'Quote',cat_thanks:'Thank you',photos:'photos',photo1:'1 photo',
  deck:'Deck',theme:'Color theme',slide:'Slide',element:'Selected element',
- g_U:'UNIST Full Version — official lockup, UNIST Navy and white only',g_W:'HCDT on white — HCDT Purple + one auxiliary color',g_A:'A. Purple background + white text + auxiliary point',g_B:'B. Purple background + auxiliary text + auxiliary point',g_C:'C. Auxiliary background + purple text + auxiliary point',g_D:'D. Auxiliary background + auxiliary text + purple point',g_E:'E. Auxiliary background + auxiliary text + auxiliary point',
+ g_U:'UNIST Full Version — official lockup, UNIST Navy and white only',g_W:'HCDT on white — HCDT Purple + one auxiliary color',g_A:'A. Purple background + white text + auxiliary point',g_B:'B. Purple background + auxiliary text + auxiliary point',g_C:'C. Auxiliary background + purple text + auxiliary point',g_D:'D. Auxiliary background + auxiliary text + purple point',g_E:'E. Auxiliary background + auxiliary text + auxiliary point',g_F:'F. Auxiliary background + purple text + white point — proposed, not yet in the guide',
  ptFallback:'Point colour is too light for text on this background, so the text colour is used.',
  lowc:'Text-to-background contrast is {r}:1, below 4.5:1. Good for titles and large text; small text (body, notes, captions) is harder to read.',
  pagenum:'Page numbers',tabEl:'Element',tabSlide:'Slide',tabDeck:'Deck',scope_el:'Applies to the selected element only.',scope_slide:'Applies to this slide only.',scope_deck:'Applies to every slide.',secLayout:'Layout',secColor:'Slide color',secAdd:'Add element',secFont:'Fonts',pnShow:'Show page numbers',pnPos:'Position',pnSize:'Size (px)',pnHide:'Hide on this slide',pnOff:'Page numbers are off. Turn them on in the Deck tab.',pnLogo:'Hidden here: the logo sits in the same corner.',pnNote:'Size is measured on the 1920 px slide. Text follows the grid margin and the baseline model.',pn_tl:'Top left',pn_tc:'Top center',pn_tr:'Top right',pn_bl:'Bottom left',pn_bc:'Bottom center',pn_br:'Bottom right',slideTheme:'Slide color',inherit:'Same as deck',layout:'Layout',change:'Change layout',
@@ -438,7 +440,7 @@ ko:{grid:'그리드',present:'발표',export:'내보내기',undo:'실행 취소'
  addSlide:'+ 슬라이드 추가',addTitle:'슬라이드 추가',changeTitle:'레이아웃 변경',
  cat_cover:'표지',cat_contents:'목차',cat_section:'간지',cat_body:'본문',cat_photo:'사진',cat_quote:'인용구',cat_thanks:'땡큐',photos:'장',photo1:'1장',
  deck:'문서',theme:'색상 테마',slide:'슬라이드',element:'선택한 요소',
- g_U:'UNIST 풀버전 — 공식 조합형, UNIST 네이비·흰색만 사용',g_W:'흰 배경 HCDT — HCDT 퍼플 + 보조색 1개',g_A:'A. 보라 배경 + 흰 글자 + 보조색 포인트',g_B:'B. 보라 배경 + 보조색 글자 + 보조색 포인트',g_C:'C. 보조색 배경 + 보라 글자 + 보조색 포인트',g_D:'D. 보조색 배경 + 보조색 글자 + 보라 포인트',g_E:'E. 보조색 배경 + 보조색 글자 + 보조색 포인트',
+ g_U:'UNIST 풀버전 — 공식 조합형, UNIST 네이비·흰색만 사용',g_W:'흰 배경 HCDT — HCDT 퍼플 + 보조색 1개',g_A:'A. 보라 배경 + 흰 글자 + 보조색 포인트',g_B:'B. 보라 배경 + 보조색 글자 + 보조색 포인트',g_C:'C. 보조색 배경 + 보라 글자 + 보조색 포인트',g_D:'D. 보조색 배경 + 보조색 글자 + 보라 포인트',g_E:'E. 보조색 배경 + 보조색 글자 + 보조색 포인트',g_F:'F. 보조색 배경 + 보라 글자 + 흰색 포인트 — 제안안, 가이드 미수록',
  ptFallback:'이 배경에서는 포인트색이 글자로 쓰기엔 너무 연해 글자색으로 표시됨.',
  lowc:'글자-배경 명도 대비 {r}:1, 기준 4.5:1 미만. 제목·큰 글자에는 적합, 작은 글자(본문·설명·캡션)는 읽기 어려움.',
  pagenum:'쪽 번호',tabEl:'요소',tabSlide:'슬라이드',tabDeck:'문서',scope_el:'선택한 요소에만 적용.',scope_slide:'이 슬라이드에만 적용.',scope_deck:'모든 슬라이드에 적용.',secLayout:'레이아웃',secColor:'슬라이드 색상',secAdd:'요소 추가',secFont:'글꼴',pnShow:'쪽 번호 표시',pnPos:'위치',pnSize:'크기(px)',pnHide:'이 슬라이드에서 숨김',pnOff:'쪽 번호가 꺼져 있음. 문서 탭에서 켜기.',pnLogo:'같은 모서리에 로고가 있어 숨김.',pnNote:'크기는 1920px 슬라이드 기준. 글자는 격자 여백과 기준선 모델에 맞춤.',pn_tl:'왼쪽 위',pn_tc:'가운데 위',pn_tr:'오른쪽 위',pn_bl:'왼쪽 아래',pn_bc:'가운데 아래',pn_br:'오른쪽 아래',slideTheme:'슬라이드 색상',inherit:'문서와 같음',layout:'레이아웃',change:'레이아웃 변경',
@@ -778,7 +780,7 @@ function renderInsp(){
        <button class="btn sm" data-add="text">${t('aText')}</button><button class="btn sm" data-add="img">${t('aImg')}</button><button class="btn sm" data-add="rect">${t('aRect')}</button><button class="btn sm" data-add="rule">${t('aRule')}</button><button class="btn sm" data-add="sym">${t('aSym')}</button>${s.els.some(x=>x.t==='logo')?'':`<button class="btn sm" data-add="logo">${t('aLogo')}</button>`}</div></div>
      <div class="sec"><h3>${t('pagenum')}</h3>${deck.pn.on?`<div class="row"><label><input type="checkbox" id="i-pnhide" ${s.noPn?'checked':''}> ${t('pnHide')}</label></div>${!s.noPn&&!pnShown(s)?`<p class="note">${t('pnLogo')}</p>`:''}`:`<p class="note">${t('pnOff')}</p>`}</div>`;
   }else{
-    const groups=['U','W','A','B','C'];
+    const groups=['U','W','A','B','C','F'];
     h+=`<div class="sec"><h3>${t('theme')}</h3><div class="themes">`;
     groups.forEach(g=>{const list=THEMES.filter(x=>x.g===g);h+=`<div class="tgroup"><div class="gl">${t('g_'+g)}</div><div class="tgrid${g==='U'?' two':''}">${list.map(x=>themeSwatch(x,x.id===deck.theme)).join('')}</div></div>`});
     const lc=contrast(dth.fg,dth.bg);
