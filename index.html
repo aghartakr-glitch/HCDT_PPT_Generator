@@ -205,7 +205,7 @@ cover:[
  [T('title','title',0,2,8,2,{x:'Tentative Title',oy:OY}),T('subtitle','lead',0,3,4,1,{va:'b'}),...NAMES(),LOGO()],
  [T('title','title',0,3,6,4),T('subtitle','lead',0,7,4,1),...NAMES(),LOGO()],
  [R(5,0,3,10,'trb'),T('title','title',0,2,5,4),T('subtitle','lead',0,6,4,1),T('name','label',0,8,2,1,{va:'b'}),T('others','label',2,8,3,1,{va:'b'}),LOGO('bl')],
- [I(0,4,0,4,10,'trb'),LOGO('tl'),T('title','title',0,3,4,4),T('subtitle','lead',0,7,4,1),...NAMES()],
+ [I(0,4,0,4,10,'trb'),LOGO('tl'),T('title','title',0,3,4,4),T('subtitle','lead',0,7,4,1),T('name','label',0,9,2,1,{va:'b'}),T('others','label',2,9,2,1,{va:'b'})],
  [I(0,0,0,8,5,'ltr'),T('title','h1',0,5,6,2,{x:'Presentation Title'}),T('subtitle','lead',0,7,4,1),...NAMES(),LOGO()],
  [SYM(0,1,2,3),T('title','title',0,5,8,2,{x:'Presentation Title'}),T('subtitle','lead',0,7,4,1),...NAMES(),LOGO()],
  [SYM(4,0,4,8,{al:'r'}),T('title','title',0,2,4,4),T('subtitle','lead',0,6,4,1),...NAMES(),LOGO()],
@@ -242,7 +242,7 @@ section:[
  [R(0,0,4,10,'ltb'),T('num','h1',4,0,1,1),T('head','title',4,4,4,4,{x:'Section\nTitle'})],
  [I(0,3,0,5,10,'trb'),T('num','h1',0,0,1,1),T('head','h1',0,7,3,2)],
  [...HDR(),I(0,0,1,8,9,'lrb')],
- [SYM(3,1,5,8,{al:'r'}),T('num','h1',0,0,1,1),T('head','title',0,6,5,2)],
+ [SYM(3,0,5,6,{al:'r'}),T('num','h1',0,0,1,1),T('head','title',0,6,5,2)],
  [T('num','lead',0,3,8,1,{al:'c'}),T('head','title',0,4,8,2,{al:'c'}),T('lead','lead',1,6,6,1,{al:'c'})],
  [T('num','h1',6,0,2,1,{al:'r'}),T('head','title',2,6,6,2,{al:'r'}),T('lead','lead',4,8,4,1,{al:'r'})],
  [R(0,0,8,5,'ltr'),T('num','h1',0,6,1,1),T('head','h1',1,6,7,1),T('lead','lead',1,7,6,1)],
@@ -419,7 +419,7 @@ en:{grid:'Grid',present:'Present',export:'Export',undo:'Undo',redo:'Redo',close:
  del:'Delete',front:'Bring forward',back:'Send backward',dup:'Duplicate',
  logoPos:'Position',logoSize:'Size',size1:'1 row',size2:'2 rows',
  logoFull:'UNIST Full Version lockup (navy / white only).',logoGen:'HCDT General Use logo in this theme’s colors.',
- overflow:'Text does not fit in its box. Shorten it, pick a smaller style or enlarge the box.',
+ overflow:'Text does not fit in its box. Shorten it, pick a smaller style or enlarge the box.',fitNote:'Text is reduced to {p}% of its style size so it fits the box.',
  dropHere:'Drop image\nor double-click',
  exporting:'Exporting…',done:'Saved',declined:'Save cancelled',failed:'Export failed: ',opened:'Project opened',
  autosaveFail:'Autosave paused: images exceed browser storage. Use Export → Save project.',
@@ -443,7 +443,7 @@ ko:{grid:'그리드',present:'발표',export:'내보내기',undo:'실행 취소'
  del:'삭제',front:'앞으로',back:'뒤로',dup:'복제',
  logoPos:'위치',logoSize:'크기',size1:'1행',size2:'2행',
  logoFull:'UNIST 풀버전 조합형 (네이비/흰색만).',logoGen:'HCDT 기본형 로고, 테마 색상 적용.',
- overflow:'글이 상자를 넘침. 줄이거나 작은 스타일을 고르거나 상자를 키우기.',
+ overflow:'글이 상자를 넘침. 줄이거나 작은 스타일을 고르거나 상자를 키우기.',fitNote:'상자에 맞추려고 스타일 크기의 {p}%로 줄임.',
  dropHere:'이미지를 놓거나\n더블클릭',
  exporting:'내보내는 중…',done:'저장됨',declined:'저장 취소됨',failed:'내보내기 실패: ',opened:'프로젝트 열림',
  autosaveFail:'자동 저장 중지: 이미지 용량이 브라우저 저장 한도 초과. 내보내기 → 프로젝트 저장 사용.',
@@ -521,10 +521,78 @@ function baselineShift(st,va){
   if(va==='b')return (st.lh-b)-BL_BOT*st.fs;   /* relative to the block's bottom edge */
   return BL_TOP*st.fs-b;                       /* relative to the block's top edge */
 }
+/* ===== Fit to frame =====
+   Text is only ever made SMALLER, never larger. If a word is wider than its frame, or the lines run past the frame
+   (InDesign baseline model below), the size is reduced in 2 % steps down to a floor per style. The same size is used
+   on screen, in the PDF/PNG and in the PowerPoint file, so nothing collides with its neighbours. */
+const FIT_MIN={display:.4,title:.4,h1:.5,tocL:.6,lead:.6,toc:.7,label:.8,body:.8,small:.85,caption:.9};
+const SLIDE_FONTS='"HCDT Helvetica","Helvetica Neue",Helvetica,Arial,"Spoqa Han Sans Neo",sans-serif';
+let _cx=null;const _fitCache=new Map();
+function wrapInfo(text,st,w){
+  _cx=_cx||document.createElement('canvas').getContext('2d');
+  _cx.font=`${st.w} ${st.fs}px ${SLIDE_FONTS}`;
+  const sp=_cx.measureText(' ').width;let n=0,wide=false;
+  for(const para of String(text).split('\n')){
+    n++;let line=0,first=true;
+    for(const wd of para.split(/ +/)){
+      const ww=_cx.measureText(wd).width;if(ww>w+.5)wide=true;
+      if(first){line=ww;first=false}else if(line+sp+ww<=w+.5)line+=sp+ww;else{n++;line=ww}
+    }
+  }
+  return {n,wide};
+}
+/* ink extent of n lines, in px from the frame top (same model as the InDesign overset test) */
+function inkSpan(n,st,fh,va,oy){
+  let top,bot;
+  if(va==='b'){bot=fh-BL_BOT*st.fs+DESC*st.fs;top=fh-BL_BOT*st.fs-(n-1)*st.lh-.72*st.fs}
+  else if(va==='m'){const blk=n*st.lh,t0=(fh-blk)/2;bot=t0+blk;top=t0}
+  else{bot=BL_TOP*st.fs+(n-1)*st.lh+DESC*st.fs;top=0}
+  return {top:top+oy,bot:bot+oy};
+}
+function fitsFrame(n,wide,st,fh,va,oy){
+  if(wide)return false;
+  const k=inkSpan(n,st,fh,va,oy);
+  /* a bottom-aligned last line may hang its descender below the frame, as in InDesign */
+  return k.top>=-3-Math.abs(oy)&&(va==='b'||k.bot<=fh+3);
+}
+/* Frames that overlap in a layout (cover title above its subtitle): the upper text may only use the space down to the
+   first ink of the lower one. Stored non-enumerable on the element so it never reaches saved projects. */
+function prepFit(s){
+  const tx=s.els.filter(e=>e.t==='text');
+  tx.forEach(e=>{
+    let lim=Infinity;
+    if((e.va||'t')==='t'){
+      const b=box(e);
+      tx.forEach(f=>{if(f===e)return;const bf=box(f);
+        if(bf.y<=b.y+1||bf.y>=b.y+b.h-1)return;                     /* must start below e's top and inside e's frame */
+        if(Math.min(b.x+b.w,bf.x+bf.w)-Math.max(b.x,bf.x)<2)return; /* and share some width */
+        const sf=effSty(f,bf),r=wrapInfo(f.text,sf,bf.w),top=bf.y+inkSpan(r.n,sf,bf.h,f.va||'t',f.oy||0).top;
+        lim=Math.min(lim,top-8-b.y)});
+    }
+    Object.defineProperty(e,'_lim',{value:lim,writable:true,configurable:true,enumerable:false});
+  });
+}
+function fitK(e,b){
+  if(e._lim!=null&&e._lim<b.h)b={w:b.w,h:Math.max(20,e._lim)};
+  const st=STY[e.s]||STY.body,min=FIT_MIN[e.s]||.8,oy=e.oy||0;
+  const key=[e.s,e.va,oy,Math.round(b.w),Math.round(b.h),e.text].join('\u0001');
+  if(_fitCache.has(key))return _fitCache.get(key);
+  let res=min;
+  for(let k=1;k>=min-1e-6;k=Math.round((k-.02)*100)/100){
+    const s2={w:st.w,fs:st.fs*k,lh:st.lh*k},r=wrapInfo(e.text,s2,b.w);
+    if(fitsFrame(r.n,r.wide,s2,b.h,e.va,oy)){res=k;break}
+  }
+  if(_fitCache.size>800)_fitCache.clear();
+  _fitCache.set(key,res);return res;
+}
+function effSty(e,b){
+  const st=STY[e.s]||STY.body,k=fitK(e,b);
+  return k>=.999?st:{fs:+(st.fs*k).toFixed(2),lh:+(st.lh*k).toFixed(2),w:st.w,n:st.n,k};
+}
 /* does the text fit its frame? uses the same baseline model as InDesign's overset test */
 function textFit(d,e){
   const tx=d.querySelector('.tx');if(!tx)return {over:false,lines:0};
-  const st=STY[e.s]||STY.body,fh=d.clientHeight;
+  const fh=Math.min(d.clientHeight,e._lim!=null?Math.max(20,e._lim):Infinity),st=effSty(e,{w:d.clientWidth,h:d.clientHeight});
   const r=document.createRange();r.selectNodeContents(tx);
   const tops=[];[...r.getClientRects()].forEach(q=>{if(q.width>0&&!tops.some(t0=>Math.abs(t0-q.top)<st.lh*.4))tops.push(q.top)});
   const n=Math.max(1,tops.length);
@@ -534,7 +602,7 @@ function textFit(d,e){
   else{bottomInk=BL_TOP*st.fs+(n-1)*st.lh+DESC*st.fs;topInk=0}
   const oy=e.oy||0;bottomInk+=oy;topInk+=oy;
   const wide=tx.scrollWidth>d.clientWidth+2;
-  return {lines:n,over:wide||bottomInk>fh+3||topInk<-3-Math.abs(oy),wide};
+  return {lines:n,over:wide||(e.va!=='b'&&bottomInk>fh+3)||topInk<-3-Math.abs(oy),wide,k:st.k||1};
 }
 function logoBox(e,theme){
   const L=LOGOS[theme.logo==='full'?'full':'general'];const h=e.size===2?RH*2+GUT:RH;const w=L.w*h/L.h;
@@ -556,14 +624,14 @@ function ruleColor(e,th){return e.fill==='pt'&&contrast(th.pt,th.bg)<3?th.fg:col
 
 /* ===== render ===== */
 function renderSlide(s,mode,idx){
-  const th=themeOf(s);const root=document.createElement('div');root.className='slide'+(mode==='edit'?' edit':'');root.style.background=th.bg;
+  prepFit(s);const th=themeOf(s);const root=document.createElement('div');root.className='slide'+(mode==='edit'?' edit':'');root.style.background=th.bg;
   let hasLogo=false;
   s.els.forEach(e=>{
     const d=document.createElement('div');d.dataset.id=e.id;
     if(e.t==='logo'){hasLogo=true;const b=logoBox(e,th);d.className='el logo';Object.assign(d.style,{left:b.x+'px',top:b.y+'px',width:b.w+'px',height:b.h+'px'});
       d.innerHTML=th.logo==='full'?svgOf('full',th.fg,null):svgOf('general',th.fg,th.pt);root.appendChild(d);return}
     const b=box(e);Object.assign(d.style,{left:b.x+'px',top:b.y+'px',width:b.w+'px',height:b.h+'px'});
-    if(e.t==='text'){const st=STY[e.s]||STY.body;d.className='el text';
+    if(e.t==='text'){const st=effSty(e,b);d.className='el text';
       Object.assign(d.style,{fontSize:st.fs+'px',lineHeight:st.lh+'px',fontWeight:st.w,color:textColor(e,th),textAlign:e.al==='c'?'center':e.al==='r'?'right':'left',justifyContent:e.va==='m'?'center':e.va==='b'?'flex-end':'flex-start'});
       const tx=document.createElement('div');tx.className='tx';tx.textContent=e.text;
       const sh=baselineShift(st,e.va)+(e.oy||0);if(Math.abs(sh)>.01){tx.style.position='relative';tx.style.top=sh+'px'}
@@ -574,7 +642,7 @@ function renderSlide(s,mode,idx){
       else if(mode==='edit'){const p=document.createElement('div');p.className='ph';p.style.color=th.bg;p.style.opacity=.7;p.textContent=t('dropHere');p.style.whiteSpace='pre-line';d.appendChild(p)}}
     else if(e.t==='rect'){d.className='el rect';d.style.background=colorOf(e.fill,th)}
     else if(e.t==='rule'){d.className='el rule';d.style.borderTop=`3px solid ${ruleColor(e,th)}`}
-    else if(e.t==='sym'){d.className='el sym';d.innerHTML=svgOf('symbol',th.fg,th.logo==='full'?'none':th.pt,e.al)}
+    else if(e.t==='sym'){d.className='el sym';d.innerHTML=svgOf('symbol',th.fg,th.pt,e.al)}
     root.appendChild(d);
   });
   if(deck.pageNum&&!hasLogo&&idx!=null){const d=document.createElement('div');d.className='el text pn';Object.assign(d.style,{left:(W-M-CW)+'px',top:(M+9*RS)+'px',width:CW+'px',height:RH+'px',fontSize:'12px',lineHeight:'17px',fontWeight:400,color:th.fg,textAlign:'right',justifyContent:'flex-end',pointerEvents:'none'});const tx=document.createElement('div');tx.className='tx';tx.textContent=String(idx+1);tx.style.position='relative';tx.style.top=baselineShift(STY.caption,'b')+'px';d.appendChild(tx);root.appendChild(d)}
@@ -716,7 +784,7 @@ function elementPanel(e,s){
     <div class="row"><label class="l">${t('align')}</label><div class="seg">${['l','c','r'].map(a=>`<button data-al="${a}" aria-pressed="${e.al===a}">${{l:'⇤',c:'↔',r:'⇥'}[a]}</button>`).join('')}</div>
       <div class="seg">${['t','m','b'].map(a=>`<button data-va="${a}" aria-pressed="${e.va===a}" title="${t('valign')}">${{t:'⤒',m:'↕',b:'⤓'}[a]}</button>`).join('')}</div></div>
     <div class="row"><label class="l">${t('color')}</label><div class="chips"><button class="chip" data-co="fg" aria-pressed="${e.co!=='pt'}"><i style="background:${th.fg}"></i>${t('cText')}</button><button class="chip" data-co="pt" aria-pressed="${e.co==='pt'}" title="${ptTextOk(th,(STY[e.s]||STY.body).fs)?'':t('ptFallback')}"><i style="background:${th.pt}"></i>${t('cPoint')}${ptTextOk(th,(STY[e.s]||STY.body).fs)?'':' *'}</button></div></div>
-    <p class="note warn" id="i-over" hidden>${t('overflow')}</p>`;
+    <p class="note" id="i-fit" hidden></p><p class="note warn" id="i-over" hidden>${t('overflow')}</p>`;
   }
   if(e.t==='rect'||e.t==='rule'){
     h+=`<div class="row"><label class="l">${t('fill')}</label><div class="chips"><button class="chip" data-fill="pt" aria-pressed="${e.fill==='pt'}"><i style="background:${th.pt}"></i>${t('cPoint')}</button><button class="chip" data-fill="fg" aria-pressed="${e.fill==='fg'}"><i style="background:${th.fg}"></i>${t('cText')}</button></div></div>`;
@@ -737,7 +805,7 @@ function elementPanel(e,s){
 }
 function renderInspPos(){const s=deck.slides[cur];const e=s.els.find(x=>x.id===sel);const p=document.getElementById('i-pos');if(!e||!p||e.t==='logo')return;
   p.textContent=`${t('cols')} ${e.c+1}${e.w>1?'–'+(e.c+e.w):''} · ${t('rows')} ${e.r+1}${e.h>1?'–'+(e.r+e.h):''}`;
-  const o=document.getElementById('i-over');if(o){const d=stageNode.querySelector(`[data-id="${e.id}"]`);o.hidden=!(d&&e.t==='text'&&textFit(d,e).over)}}
+  const ft=document.getElementById('i-fit');if(ft&&e.t==='text'){const d0=stageNode.querySelector(`[data-id="${e.id}"]`);const k0=d0?effSty(e,{w:d0.clientWidth,h:d0.clientHeight}).k:null;ft.hidden=!k0;if(k0)ft.textContent=t('fitNote',{p:Math.round(k0*100)})}const o=document.getElementById('i-over');if(o){const d=stageNode.querySelector(`[data-id="${e.id}"]`);o.hidden=!(d&&e.t==='text'&&textFit(d,e).over)}}
 function change(fn,keepInsp){snapshot();fn();renderStage();renderSlides();if(!keepInsp)renderInsp();else renderInspPos();autosave()}
 function bindInsp(e,s){
   const q=(sel)=>insp.querySelector(sel),qa=(sel)=>insp.querySelectorAll(sel);
@@ -871,11 +939,11 @@ async function exportPPTX(){
   const k=13.333/W;const PT=0.5; /* 1920pt InDesign page → 960pt PowerPoint page */
   const hx=c=>c.replace('#','');
   for(let i=0;i<deck.slides.length;i++){
-    const s=deck.slides[i],th=themeOf(s);const sl=p.addSlide();sl.background={color:hx(th.bg)};
+    const s=deck.slides[i],th=themeOf(s);prepFit(s);const sl=p.addSlide();sl.background={color:hx(th.bg)};
     for(const e of s.els){
       if(e.t==='logo'){const b=logoBox(e,th);const svg=th.logo==='full'?svgOf('full',th.fg):svgOf('general',th.fg,th.pt);const png=await svgToPng(svg,b.w*3,b.h*3);sl.addImage({data:png,x:b.x*k,y:b.y*k,w:b.w*k,h:b.h*k});continue}
       const b=box(e);
-      if(e.t==='text'){const st=STY[e.s]||STY.body;
+      if(e.t==='text'){const st=effSty(e,b);
         /* PowerPoint puts the baseline at (line spacing − descent) from the top of a line; move the box so it lands on the InDesign baseline */
         const dsc=st.w===800?.234:st.w===500?.221:.214;
         const sh=e.va==='b'?(dsc-BL_BOT)*st.fs:BL_TOP*st.fs-(st.lh-dsc*st.fs);
@@ -885,7 +953,7 @@ async function exportPPTX(){
       else if(e.t==='rule'){sl.addShape(p.ShapeType.rect,{x:b.x*k,y:b.y*k,w:b.w*k,h:3*k,fill:{color:hx(ruleColor(e,th))},line:{type:'none'}})}
       else if(e.t==='img'){const src=e.src&&deck.images[e.src];if(src){sl.addImage({data:await cropImage(src,b,e),x:b.x*k,y:b.y*k,w:b.w*k,h:b.h*k})}else sl.addShape(p.ShapeType.rect,{x:b.x*k,y:b.y*k,w:b.w*k,h:b.h*k,fill:{color:hx(th.fg)},line:{type:'none'}})}
       else if(e.t==='sym'){const L=LOGOS.symbol;const sc=Math.min(b.w/L.w,b.h/L.h);const w=L.w*sc,h=L.h*sc;const x=e.al==='r'?b.x+b.w-w:e.al==='c'?b.x+(b.w-w)/2:b.x;const y=b.y+(b.h-h)/2;
-        const png=await svgToPng(svgOf('symbol',th.fg,th.logo==='full'?'none':th.pt),w*2,h*2);sl.addImage({data:png,x:x*k,y:y*k,w:w*k,h:h*k})}
+        const png=await svgToPng(svgOf('symbol',th.fg,th.pt),w*2,h*2);sl.addImage({data:png,x:x*k,y:y*k,w:w*k,h:h*k})}
     }
     if(deck.pageNum&&!s.els.some(e=>e.t==='logo'))sl.addText(String(i+1),{x:(W-M-CW)*k,y:(M+9*RS)*k,w:CW*k,h:RH*k,margin:0,fontFace:'Helvetica Neue',fontSize:6,color:hx(th.fg),align:'right',valign:'bottom'});
   }
@@ -910,7 +978,7 @@ document.getElementById('btn-undo').onclick=undo;document.getElementById('btn-re
 function renderAll(){renderSlides();renderStage();renderInsp()}
 addEventListener('resize',()=>{fitStage();thumbFits.forEach(f=>f())});
 deck=load();applyLang();renderAll();
-document.fonts&&document.fonts.ready.then(()=>{_blCache={};renderAll()});
+document.fonts&&document.fonts.ready.then(()=>{_blCache={};_fitCache.clear();renderAll()});
 window.HXApply=function(l){if(l!==LANG){LANG=l;applyLang();renderAll()}};
 </script>
 <script src="hcdt-ui.js" data-tool="slides"></script>
