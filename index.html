@@ -428,7 +428,7 @@ en:{grid:'Grid',present:'Present',export:'Export',undo:'Undo (Ctrl+Z)',redo:'Red
  cat_cover:'Cover',cat_contents:'Contents',cat_section:'Section',cat_body:'Body',cat_photo:'Photo',cat_quote:'Quote',cat_thanks:'Thank you',photos:'photos',photo1:'1 photo',
  deck:'Deck',theme:'Color theme',slide:'Slide',element:'Selected element',
  g_U:'UNIST',g_W:'HCDT White',g_A:'A',g_B:'B',g_C:'C',g_D:'D',g_E:'E',
- ptFallback:'Point colour is too light for text on this background, so the text colour is used.',
+ ptFallback:'Point color is too light for text on this background, so the text color is used.',
  lowc:'Text-to-background contrast is {r}:1, below 4.5:1. Good for titles and large text; small text (body, notes, captions) is harder to read.',
  pagenum:'Page numbers',tabEl:'Element',tabSlide:'Slide',tabDeck:'Deck',scope_el:'Applies to the selected element only.',scope_slide:'Applies to this slide only.',scope_deck:'Applies to every slide.',secLayout:'Layout',secColor:'Slide color',secAdd:'Add element',secFont:'Fonts',pnShow:'Show page numbers',pnPos:'Position',pnSize:'Size (px)',pnHide:'Hide on this slide',pnOff:'Page numbers are off. Turn them on in the Deck tab.',pnLogo:'Hidden here: the logo sits in the same corner.',pnNote:'Size is measured on the 1920 px slide. Text follows the grid margin and the baseline model.',pn_tl:'Top left',pn_tc:'Top center',pn_tr:'Top right',pn_bl:'Bottom left',pn_bc:'Bottom center',pn_br:'Bottom right',slideTheme:'Slide color',inherit:'Same as deck',layout:'Layout',change:'Change layout',
  add:'Add',aText:'Text',aImg:'Image',aRect:'Color block',aRule:'Line',aSym:'Symbol',aLogo:'Logo',
@@ -552,7 +552,7 @@ function baselineShift(st,va){
 /* ===== Fit to frame =====
    Text is only ever made SMALLER, never larger. If a word is wider than its frame, or the lines run past the frame
    (InDesign baseline model below), the size is reduced in 2 % steps down to a floor per style. The same size is used
-   on screen, in the PDF/PNG and in the PowerPoint file, so nothing collides with its neighbours. */
+   on screen, in the PDF/PNG and in the PowerPoint file, so nothing collides with its neighbors. */
 const FIT_MIN={display:.4,title:.4,h1:.5,tocL:.6,lead:.6,toc:.7,label:.8,body:.8,small:.85,caption:.9};
 const SLIDE_FONTS='"HCDT Helvetica","Helvetica Neue",Helvetica,Arial,"Spoqa Han Sans Neo",sans-serif';
 let _cx=null;const _fitCache=new Map();
@@ -644,10 +644,10 @@ function svgOf(key,tc,pc,align){
 }
 const themeOf=s=>TH(s.theme||deck.theme);
 const colorOf=(role,th)=>role==='pt'?th.pt:role==='bg'?th.bg:th.fg;
-/* Point colour as TEXT only when it stays legible on the background (3:1 for 36 pt and up, 4.5:1 below); otherwise the text colour is used. */
+/* Point color as TEXT only when it stays legible on the background (3:1 for 36 pt and up, 4.5:1 below); otherwise the text color is used. */
 function ptTextOk(th,fs){return contrast(th.pt,th.bg)>=(fs>=36?3:4.5)}
 function textColor(e,th){const fs=(STY[e.s]||STY.body).fs;return e.co==='pt'&&ptTextOk(th,fs)?th.pt:th.fg}
-/* Thin rules must stay visible: point colour only when it reaches 3:1, otherwise the text colour. */
+/* Thin rules must stay visible: point color only when it reaches 3:1, otherwise the text color. */
 function ruleColor(e,th){return e.fill==='pt'&&contrast(th.pt,th.bg)<3?th.fg:colorOf(e.fill,th)}
 
 /* ===== render ===== */
