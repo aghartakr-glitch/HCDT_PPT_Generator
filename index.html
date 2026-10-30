@@ -497,7 +497,7 @@ function instantiate(cat,idx){
   return {id:uid(),cat,li:idx,theme:null,els:src.map(e=>{const o=JSON.parse(JSON.stringify(e));o.id=uid();if(o.t==='text'){o.text=o.x!=null?o.x:defText(o.role);delete o.x;o.al=o.al||'l';o.va=o.va||'t';o.co=o.co||'fg'}if(o.t==='img'){o.src=null;o.px=50;o.py=50;o.z=1}return o})};
 }
 function sampleDeck(){
-  return {v:1,theme:'u-w',pn:{on:false,pos:'br',size:12},images:{},slides:[instantiate('cover',0),instantiate('contents',0),instantiate('section',0),instantiate('body',0),instantiate('body',1),instantiate('photo1',0),instantiate('photo3',0),instantiate('quote',0),instantiate('thanks',0)]};
+  return {v:1,theme:'u-w',pn:{on:false,pos:'br',size:12},images:{},slides:[instantiate('cover',8),instantiate('contents',0),instantiate('section',0),instantiate('body',0),instantiate('body',1),instantiate('photo1',0),instantiate('photo3',0),instantiate('quote',0),instantiate('thanks',0)]};
 }
 /* history */
 let hist=[],fut=[];
