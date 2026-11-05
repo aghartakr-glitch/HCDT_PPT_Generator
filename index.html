@@ -642,7 +642,8 @@ function svgOf(key,tc,pc,align){
   for(const g in L.groups){const f=g==='t'?tc:pc;if(f&&f!=='none')s+=`<path fill="${f}" d="${L.groups[g]}"/>`}
   return s+'</svg>';
 }
-const themeOf=s=>TH(s.theme||deck.theme);
+/* one color set for the whole deck: per-slide themes are not offered, and any saved per-slide theme is ignored */
+const themeOf=s=>TH(deck.theme);
 const colorOf=(role,th)=>role==='pt'?th.pt:role==='bg'?th.bg:th.fg;
 /* Point color as TEXT only when it stays legible on the background (3:1 for 36 pt and up, 4.5:1 below); otherwise the text color is used. */
 function ptTextOk(th,fs){return contrast(th.pt,th.bg)>=(fs>=36?3:4.5)}
@@ -791,9 +792,6 @@ function renderInsp(){
     const cats=LAYOUTS[s.cat];
     h+=`<div class="sec"><h3>${t('secLayout')}</h3>
      <div class="row"><span class="pos">${s.cat.startsWith('photo')?t('cat_photo')+' '+s.cat.slice(5):t('cat_'+s.cat)} ${String(s.li+1).padStart(2,'0')} / ${cats.length}</span><button class="btn sm" id="i-change">${t('change')}</button></div></div>
-     <div class="sec"><h3>${t('secColor')}</h3>
-     <div class="row"><button class="btn sm" data-sth="" aria-pressed="${!s.theme}">${t('inherit')}</button></div>
-     <div class="themes">${themeRows(s.theme,'data-sth')}</div></div>
      <div class="sec"><h3>${t('secAdd')}</h3><div class="chips">
        <button class="btn sm" data-add="text">${t('aText')}</button><button class="btn sm" data-add="img">${t('aImg')}</button><button class="btn sm" data-add="rect">${t('aRect')}</button><button class="btn sm" data-add="rule">${t('aRule')}</button><button class="btn sm" data-add="sym">${t('aSym')}</button>${s.els.some(x=>x.t==='logo')?'':`<button class="btn sm" data-add="logo">${t('aLogo')}</button>`}</div></div>
      <div class="sec"><h3>${t('pagenum')}</h3>${deck.pn.on?`<div class="row"><label><input type="checkbox" id="i-pnhide" ${s.noPn?'checked':''}> ${t('pnHide')}</label></div>${!s.noPn&&!pnShown(s)?`<p class="note">${t('pnLogo')}</p>`:''}`:`<p class="note">${t('pnOff')}</p>`}</div>`;
