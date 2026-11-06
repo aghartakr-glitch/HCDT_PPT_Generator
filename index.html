@@ -773,7 +773,7 @@ function gcImages(){const used=new Set();deck.slides.forEach(s=>s.els.forEach(e=
 
 /* ===== inspector ===== */
 const insp=document.getElementById('insp');
-const VROWS=[{k:'U',gs:['U']},{k:'W',gs:['W']},{k:'P',gs:['A','B']},{k:'X',gs:['C']}],VLAB={U:'UNIST',W:'White',P:'Purple',X:'Color'},varSel={};
+const VROWS=[{k:'U',gs:['U']},{k:'W',gs:['W']},{k:'X',gs:['C']}],VLAB={U:'UNIST',W:'White',X:'Color'},varSel={};
 function themeRows(selId,attr){
   return VROWS.map(r=>`<div class="tgroup"><div class="gl">${VLAB[r.k]}</div><div class="tgrid">${THEMES.filter(x=>r.gs.includes(x.g)).map(x=>themeSwatch(x,x.id===selId,attr)).join('')}</div></div>`).join('');
 }
@@ -1028,6 +1028,6 @@ document.fonts&&document.fonts.ready.then(()=>{_blCache={};_fitCache.clear();ren
 window.HXApply=function(l){if(l!==LANG){LANG=l;applyLang();renderAll()}};
 </script>
 <script src="hcdt-ui.js?v=20261103e" data-tool="slides"></script>
-<script>window.HX_CMYK=['#stage','#slides']</script><script src="hcdt-cmyk.js?v=20261105b"></script>
+<script>window.HX_CMYK=['#stage','#slides','.tsw']</script><script src="hcdt-cmyk.js?v=20261105b"></script>
 <style>html.hx-wide .hx-steps{display:none!important}html.hx-wide,html.hx-wide body{overflow:hidden}</style>
 </body></html>
