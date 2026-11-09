@@ -399,7 +399,6 @@ const addT=(g,id,bg,fg,pt,logo)=>THEMES.push({g,id,bg,fg,pt,logo});
 addT('U','u-w',C.W,C.N,C.N,'full'); addT('U','u-n',C.N,C.W,C.W,'full');
 [C.V,C.Tc,C.F,C.A].forEach((a,i)=>addT('W','w'+i,C.W,C.P,a,'general'));
 [C.V,C.Tc,C.F,C.A].forEach((a,i)=>addT('A','a'+i,C.P,C.W,a,'general'));
-[[C.Tc,C.V],[C.F,C.A],[C.V,C.A],[C.A,C.F]].forEach(([f,p],i)=>addT('B','b'+i,C.P,f,p,'general'));
 [[C.V,C.A],[C.Tc,C.V],[C.F,C.Tc],[C.A,C.F]].forEach(([b,p],i)=>addT('C','c'+i,b,C.P,p,'general'));
 [[C.V,C.Tc,C.P],[C.Tc,C.F,C.P],[C.F,C.A,C.P],[C.A,C.V,C.P]].forEach(([b,f,p],i)=>addT('D','d'+i,b,f,p,'general'));
 [[C.V,C.Tc,C.A],[C.Tc,C.F,C.A],[C.F,C.A,C.Tc],[C.A,C.V,C.Tc]].forEach(([b,f,p],i)=>addT('E','e'+i,b,f,p,'general'));
@@ -504,6 +503,8 @@ function sampleDeck(){
 let hist=[],fut=[];
 /* page number: deck.pn = {on, pos:'tl|tc|tr|bl|bc|br', size:px at 1920 wide}; slide.noPn hides it on one slide */
 function normDeck(d){if(!d.pn||typeof d.pn!=='object')d.pn={on:!!d.pageNum,pos:'br',size:12};delete d.pageNum;
+  if(!THEMES.some(x=>x.id===d.theme))d.theme='u-w';
+  if(Array.isArray(d.slides))d.slides.forEach(s=>{if(s.theme&&!THEMES.some(x=>x.id===s.theme))s.theme=null});
   if(!/^[tb][lcr]$/.test(d.pn.pos||''))d.pn.pos='br';d.pn.size=Math.max(8,Math.min(48,+d.pn.size||12));d.pn.on=!!d.pn.on;return d}
 function pnGeom(pn){const sz=pn.size,lh=Math.round(sz*1.4),v=pn.pos[0],hx_=pn.pos[1],w=CW,h=Math.max(RH,lh);
   return{left:hx_==='l'?M:hx_==='r'?W-M-w:(W-w)/2,top:v==='t'?M:H-M-h,w,h,sz,lh,v,al:{l:'left',c:'center',r:'right'}[hx_]}}
@@ -511,7 +512,7 @@ function pnShown(s){if(!deck.pn||!deck.pn.on||s.noPn)return false;return !s.els.
 function syncUR(){const u=document.getElementById('btn-undo'),r=document.getElementById('btn-redo');if(u)u.disabled=!hist.length;if(r)r.disabled=!fut.length}
 setInterval(syncUR,250);
 function snapshot(){hist.push(JSON.stringify({slides:deck.slides,theme:deck.theme,pn:deck.pn}));if(hist.length>60)hist.shift();fut=[]}
-function restore(s){const o=JSON.parse(s);deck.slides=o.slides;deck.theme=o.theme;if(o.pn)deck.pn=o.pn;cur=Math.min(cur,deck.slides.length-1);sel=null;renderAll()}
+function restore(s){const o=normDeck(JSON.parse(s));deck.slides=o.slides;deck.theme=o.theme;if(o.pn)deck.pn=o.pn;cur=Math.min(cur,deck.slides.length-1);sel=null;renderAll()}
 function undo(){if(!hist.length)return;fut.push(JSON.stringify({slides:deck.slides,theme:deck.theme,pn:deck.pn}));restore(hist.pop())}
 function redo(){if(!fut.length)return;hist.push(JSON.stringify({slides:deck.slides,theme:deck.theme,pn:deck.pn}));restore(fut.pop())}
 /* persistence (per-viewer convenience only) */
