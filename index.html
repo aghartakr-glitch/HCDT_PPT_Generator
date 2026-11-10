@@ -777,7 +777,7 @@ function gcImages(){const used=new Set();deck.slides.forEach(s=>s.els.forEach(e=
 
 /* ===== inspector ===== */
 const insp=document.getElementById('insp');
-const VROWS=[{k:'U',gs:['U']},{k:'W',gs:['W']},{k:'X',gs:['C']}],VLAB={U:'UNIST',W:'White',X:'Color'},varSel={};
+const VROWS=[{k:'U',gs:['U']},{k:'W',gs:['W']},{k:'P',gs:['A']},{k:'X',gs:['C']}],VLAB={U:'UNIST',W:'White',P:'Purple',X:'Color'},varSel={};
 function themeRows(selId,attr){
   return VROWS.map(r=>`<div class="tgroup"><div class="gl">${VLAB[r.k]}</div><div class="tgrid">${THEMES.filter(x=>r.gs.includes(x.g)).map(x=>themeSwatch(x,x.id===selId,attr)).join('')}</div></div>`).join('');
 }
