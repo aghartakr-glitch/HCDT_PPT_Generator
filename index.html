@@ -64,7 +64,13 @@ header.top{display:flex;align-items:center;gap:12px;padding-block:10px;padding-l
 .thumb.drag-over .frame{outline:2px dashed var(--accent)}
 .add-slide{flex:0 0 auto;height:100%;aspect-ratio:16/9;border:1px dashed #b9bdcc;background:none;border-radius:0;padding:0 12px;color:var(--muted)}
 .add-slide:hover{color:var(--accent);border-color:var(--accent)}
-.stage-wrap{position:relative;overflow:auto;background:var(--stage);display:flex;align-items:center;justify-content:center;padding:24px;min-width:0}
+.stage-wrap{position:relative;overflow:auto;background:var(--stage);display:flex;padding:24px;min-width:0}
+.stage-wrap>.stage{margin:auto}
+/* zoom bar: same bar, same corner as the Letter and Poster editors (Fit = 100%) */
+.main>.zoombar{grid-area:canvas;align-self:start;justify-self:start;z-index:5;display:inline-flex;gap:4px;align-items:center;margin:7px 0 0 12px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:3px;height:fit-content}
+.zoombar button{border:0;background:none;padding:3px 9px;border-radius:5px;font:inherit;font-size:14px;line-height:1.4;cursor:pointer}
+.zoombar button:hover{background:rgba(0,0,0,.06)}
+.zoombar output{padding:3px 6px;min-width:46px;text-align:center;font-size:14px;line-height:1.4;font-variant-numeric:tabular-nums;color:var(--muted)}
 html.hx-framed .stage-wrap{align-items:flex-start}
 @media (min-width:821px){html.hx-framed .main{grid-template-rows:var(--canvas-h,minmax(0,1fr)) var(--filmstrip-h);align-content:start}html.hx-framed .main>aside.insp{min-height:0;overflow:auto}}
 .stage{position:relative;box-shadow:0 2px 18px rgba(18,22,51,.16);flex:none}
@@ -193,6 +199,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     <div class="stage" id="stage"></div>
     <div class="stage-bar"><span id="stage-info"></span></div>
   </div>
+  <div class="zoombar" role="group" aria-label="Zoom"><button type="button" id="zOut" aria-label="Zoom out">−</button><output id="zVal" aria-live="polite">100%</output><button type="button" id="zIn" aria-label="Zoom in">+</button><button type="button" id="zFit">Fit</button></div>
   <aside class="insp" id="insp"></aside>
 </div>
 </div>
@@ -722,7 +729,7 @@ function slideAction(a,i){
 }
 
 /* ===== stage ===== */
-const stage=document.getElementById('stage'),stageWrap=document.getElementById('stage-wrap');
+const stage=document.getElementById('stage'),stageWrap=document.getElementById('stage-wrap');let zoomK=1; /* 1 = Fit */
 let scale=.5,stageNode=null;
 /* settings panel: closed by default (the canvas uses the full width); opens when an element is selected or from the Settings button */
 const mainEl=document.querySelector('.main');
@@ -734,10 +741,15 @@ addEventListener('resize',()=>{ fitStage(); thumbFits.forEach(f=>f&&f()); });
 addEventListener('load',()=>{ fitStage(); thumbFits.forEach(f=>f&&f()); setTimeout(()=>{ fitStage(); thumbFits.forEach(f=>f&&f()); },300); });
 function fitStage(){const FRAMED=document.documentElement.classList.contains('hx-framed');const r=stageWrap.getBoundingClientRect();const pad=window.innerWidth<=820?24:48;let availH=r.height;
   if(FRAMED&&window.innerWidth>820){ availH=innerHeight-mainEl.getBoundingClientRect().top-parseFloat(getComputedStyle(mainEl).getPropertyValue('--filmstrip-h'))-4; }
-  scale=Math.max(.12,Math.min((r.width-pad)/W,(availH-pad)/H,1));
-  if(FRAMED&&window.innerWidth>820) mainEl.style.setProperty('--canvas-h',Math.ceil(H*scale+pad)+'px');
-  if(window.innerWidth<=820)scale=Math.max(.12,(r.width-pad)/W);
+  let fit=Math.max(.12,Math.min((r.width-pad)/W,(availH-pad)/H,1));
+  if(FRAMED&&window.innerWidth>820) mainEl.style.setProperty('--canvas-h',Math.ceil(H*fit+pad)+'px');
+  if(window.innerWidth<=820)fit=Math.max(.12,(r.width-pad)/W);
+  scale=fit*zoomK; /* zoom bar: Fit = 100%, steps of x1.2 between 10% and 800% (same as Letter and Poster) */
   stage.style.width=W*scale+'px';stage.style.height=H*scale+'px';if(stageNode)stageNode.style.transform=`scale(${scale})`;}
+function setZoom(v){zoomK=Math.max(.1,Math.min(8,v));const o=document.getElementById('zVal');if(o)o.textContent=Math.round(zoomK*100)+'%';fitStage();}
+document.getElementById('zOut').addEventListener('click',()=>setZoom(zoomK/1.2));
+document.getElementById('zIn').addEventListener('click',()=>setZoom(zoomK*1.2));
+document.getElementById('zFit').addEventListener('click',()=>setZoom(1));
 function renderStage(){
   const s=deck.slides[cur];stage.innerHTML='';stageNode=renderSlide(s,'edit',cur);stage.appendChild(stageNode);fitStage();
   stageNode.querySelectorAll('.el').forEach(d=>{const e=s.els.find(x=>x.id===d.dataset.id);if(!e)return;
